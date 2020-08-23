@@ -16,13 +16,39 @@ import { LoginController } from './login';
 
 interface SutTypes {
   sut: LoginController;
+  validatorStub: ValidationContract;
 }
 
 const makeSut = (): SutTypes => {
-  const sut = new LoginController();
-  return { sut };
+  const validatorStub = makeValidator();
+  const sut = new LoginController(validatorStub);
+  return { sut, validatorStub };
 };
+const makeValidator = (): ValidationContract => {
+  class ValidatorStub extends ValidationContract {
+    _errors: Array<any>;
 
+    isNotArrayOrEmpty(value: any, message: any): boolean {
+      return true;
+    }
+    isTrue(value: any, message: any): boolean {
+      return true;
+    }
+    isRequired(value: any, message: any): boolean {
+      return true;
+    }
+    errors(): any[] {
+      return this._errors;
+    }
+    isValid(): boolean {
+      return true;
+    }
+    isEmail(email: string, message: string): boolean {
+      return true;
+    }
+  }
+  return new ValidatorStub();
+};
 describe('Login Controller', () => {
   test('Should return 400 if no email is provided', async () => {
     const { sut } = makeSut();
@@ -48,6 +74,22 @@ describe('Login Controller', () => {
     const httpResponse = await sut.handle(httpRequest);
     expect(httpResponse).toEqual(
       badRequest(new MissingParamError('passwordConfirmation')),
+    );
+  });
+  test('Should call ValidatorContract with correct email', async () => {
+    const { sut, validatorStub } = makeSut();
+    const isEmailSpy = jest.spyOn(validatorStub, 'isEmail');
+    const httpRequest = {
+      body: {
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        email: 'email@email.com',
+      },
+    };
+    await sut.handle(httpRequest);
+    expect(isEmailSpy).toHaveBeenCalledWith(
+      'email@email.com',
+      'Email inválido',
     );
   });
 });
