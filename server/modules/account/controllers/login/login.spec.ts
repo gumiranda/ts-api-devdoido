@@ -49,6 +49,13 @@ const makeValidator = (): ValidationContract => {
   }
   return new ValidatorStub();
 };
+const makeFakeRequest = (): HttpRequest => ({
+  body: {
+    password: 'any_password',
+    passwordConfirmation: 'any_password',
+    email: 'email@email.com',
+  },
+});
 describe('Login Controller', () => {
   test('Should return 400 if no email is provided', async () => {
     const { sut } = makeSut();
@@ -79,14 +86,7 @@ describe('Login Controller', () => {
   test('Should call ValidatorContract with correct email', async () => {
     const { sut, validatorStub } = makeSut();
     const isEmailSpy = jest.spyOn(validatorStub, 'isEmail');
-    const httpRequest = {
-      body: {
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-        email: 'email@email.com',
-      },
-    };
-    await sut.handle(httpRequest);
+    await sut.handle(makeFakeRequest());
     expect(isEmailSpy).toHaveBeenCalledWith(
       'email@email.com',
       'Email inválido',
@@ -95,15 +95,7 @@ describe('Login Controller', () => {
   test('Should returns 400 ValidatorContract with invalid email', async () => {
     const { sut, validatorStub } = makeSut();
     jest.spyOn(validatorStub, 'isEmail').mockReturnValueOnce(false);
-    const isEmailSpy = jest.spyOn(validatorStub, 'isEmail');
-    const httpRequest = {
-      body: {
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-        email: 'email@email.com',
-      },
-    };
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(makeFakeRequest());
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')));
   });
 });

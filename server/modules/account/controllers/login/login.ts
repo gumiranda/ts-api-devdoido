@@ -11,17 +11,19 @@ export class LoginController implements Controller {
     this.validator = validator;
   }
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    if (!httpRequest.body.email) {
+    const { email, password, passwordConfirmation } = httpRequest.body;
+
+    if (!email) {
       return new Promise((resolve) =>
         resolve(badRequest(new MissingParamError('email'))),
       );
     }
-    if (!httpRequest.body.password) {
+    if (!password) {
       return new Promise((resolve) =>
         resolve(badRequest(new MissingParamError('password'))),
       );
     }
-    if (!httpRequest.body.passwordConfirmation) {
+    if (!passwordConfirmation) {
       return new Promise((resolve) =>
         resolve(badRequest(new MissingParamError('passwordConfirmation'))),
       );
@@ -32,7 +34,6 @@ export class LoginController implements Controller {
         return badRequest(new MissingParamError(field));
       }
     }
-    const { email, password, passwordConfirmation } = httpRequest.body;
     if (password !== passwordConfirmation) {
       return badRequest(new InvalidParamError('passwordConfirmation'));
     }
