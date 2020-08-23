@@ -92,4 +92,18 @@ describe('Login Controller', () => {
       'Email inválido',
     );
   });
+  test('Should returns 400 ValidatorContract with invalid email', async () => {
+    const { sut, validatorStub } = makeSut();
+    jest.spyOn(validatorStub, 'isEmail').mockReturnValueOnce(false);
+    const isEmailSpy = jest.spyOn(validatorStub, 'isEmail');
+    const httpRequest = {
+      body: {
+        password: 'any_password',
+        passwordConfirmation: 'any_password',
+        email: 'email@email.com',
+      },
+    };
+    const httpResponse = await sut.handle(httpRequest);
+    expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')));
+  });
 });
