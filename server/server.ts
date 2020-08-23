@@ -3,9 +3,10 @@ import { MongoHelper } from './bin/helpers/db/mongo/mongo-helper';
 import jwt from 'jsonwebtoken';
 import variables from './bin/configuration/variables';
 const connectedUsers = {};
-MongoHelper.connectMongoose(process.env.connection)
+MongoHelper.connect(process.env.connection)
   .then(async () => {
     const { server, io } = await import('./bin/configuration/app');
+
     let port = process.env.PORT || 3333;
     server.listen(port, () => {
       io.on('connection', async (socket) => {

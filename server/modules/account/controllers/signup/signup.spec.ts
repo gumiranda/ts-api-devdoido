@@ -151,21 +151,24 @@ describe('SignUp Controller', () => {
 
   test('Should return 400 if an invalid email is provided', async () => {
     const { sut, emailValidatorStub } = makeSut();
-    jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false);
+    jest.spyOn(emailValidatorStub, 'isEmail').mockReturnValueOnce(false);
     const httpResponse = await sut.handle(makeFakeRequest());
     expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')));
   });
 
   test('Should call Validator with correct email', async () => {
     const { sut, emailValidatorStub } = makeSut();
-    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid');
+    const isValidSpy = jest.spyOn(emailValidatorStub, 'isEmail');
     await sut.handle(makeFakeRequest());
-    expect(isValidSpy).toHaveBeenCalledWith('any_email@mail.com');
+    expect(isValidSpy).toHaveBeenCalledWith(
+      'any_email@mail.com',
+      'Email inválido',
+    );
   });
 
   test('Should return 500 if Validator throws', async () => {
     const { sut, emailValidatorStub } = makeSut();
-    jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
+    jest.spyOn(emailValidatorStub, 'isEmail').mockImplementationOnce(() => {
       throw new Error();
     });
     const httpResponse = await sut.handle(makeFakeRequest());
