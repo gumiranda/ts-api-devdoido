@@ -13,6 +13,7 @@ import {
   InvalidParamError,
   ServerError,
 } from '../../../../bin/errors';
+import { ValidationComposite } from '../../../../bin/helpers/validators/validation-composite';
 import { Validation } from '../../../../bin/helpers/validators/validation';
 const makeValidator = (): ValidationContract => {
   class ValidatorStub extends ValidationContract {
@@ -50,7 +51,7 @@ const makeAddAccount = (): AddAccount => {
 };
 const makeValidation = (): Validation => {
   class ValidationStub implements Validation {
-    validate(input: any): Error {
+    validate(input: any): Error[] {
       return null;
     }
   }
@@ -94,23 +95,6 @@ const makeSut = (): SutTypes => {
   };
 };
 describe('SignUp Controller', () => {
-  test('Should return 400 if password confirmation fails', async () => {
-    const { sut } = makeSut();
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'invalid_password',
-      },
-    };
-    const httpResponse = await sut.handle(httpRequest);
-    expect(httpResponse.statusCode).toBe(400);
-    expect(httpResponse.body).toEqual(
-      new InvalidParamError('passwordConfirmation'),
-    );
-  });
-
   test('Should return 400 if an invalid email is provided', async () => {
     const { sut, validatorStub } = makeSut();
     jest.spyOn(validatorStub, 'isEmail').mockReturnValueOnce(false);
@@ -174,10 +158,10 @@ describe('SignUp Controller', () => {
     const { sut, validationStub } = makeSut();
     jest
       .spyOn(validationStub, 'validate')
-      .mockReturnValueOnce(new MissingParamError('any_field'));
+      .mockReturnValueOnce([new MissingParamError('any_field')]);
     const httpResponse = await sut.handle(makeFakeRequest());
     expect(httpResponse).toEqual(
-      badRequest(new MissingParamError('any_field')),
+      badRequest([new MissingParamError('any_field')]),
     );
   });
 });

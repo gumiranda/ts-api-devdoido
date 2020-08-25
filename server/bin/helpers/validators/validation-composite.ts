@@ -5,20 +5,12 @@ export class ValidationComposite implements Validation {
   constructor(validations: Validation[]) {
     this.validations = validations;
   }
-  validate(input: any): Error {
-    for (const validation of this.validations) {
-      const error = validation.validate(input);
-      if (error) {
-        return error;
-      }
-    }
-  }
-  validateAll(input: any): Array<Error> {
+  validate(input: any): Error[] {
     let arrErrors = [];
     for (const validation of this.validations) {
       const error = validation.validate(input);
       if (error) {
-        arrErrors.push(error.message);
+        arrErrors.push(error[0].message);
       }
     }
     return arrErrors;

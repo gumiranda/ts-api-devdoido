@@ -9,17 +9,15 @@ import {
   ok,
 } from '../../../../bin/helpers/http-helper';
 import { Validation } from '../../../../bin/helpers/validators/validation';
-import { ValidationComposite } from '../../../../bin/helpers/validators/validation-composite';
-
 export class SignUpController implements Controller {
   private readonly validator: ValidationContract;
   private readonly addAccount: AddAccount;
-  private readonly validation: ValidationComposite;
+  private readonly validation: Validation;
 
   constructor(
     validator: ValidationContract,
     addAccount: AddAccount,
-    validation: ValidationComposite,
+    validation: Validation,
   ) {
     this.validator = validator;
     this.validation = validation;
@@ -28,14 +26,11 @@ export class SignUpController implements Controller {
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const errors = this.validation.validateAll(httpRequest.body);
+      const errors = this.validation.validate(httpRequest.body);
       if (errors?.length > 0) {
         return badRequest(errors);
       }
-      const { name, email, password, passwordConfirmation } = httpRequest.body;
-      if (password !== passwordConfirmation) {
-        return badRequest(new InvalidParamError('passwordConfirmation'));
-      }
+      const { name, email, password } = httpRequest.body;
       const isEmail = this.validator.isEmail(email, 'Email inválido');
       if (!isEmail) {
         return badRequest(new InvalidParamError('email'));
