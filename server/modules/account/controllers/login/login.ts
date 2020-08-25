@@ -6,34 +6,24 @@ import {
   ok,
   unauthorized,
 } from '../../../../bin/helpers/http-helper';
-import { MissingParamError, InvalidParamError } from '../../../../bin/errors';
-import ValidationContract from '../../../../bin/helpers/validators/validationContract';
 import { Authentication } from '../../../../bin/usecases/auth/authentication';
+import { Validation } from '../../../../bin/helpers/validators/validation';
 
 export class LoginController implements Controller {
-  private readonly validator: ValidationContract;
+  private readonly validation: Validation;
   private readonly authentication: Authentication;
 
-  constructor(validator: ValidationContract, authentication: Authentication) {
-    this.validator = validator;
+  constructor(validation: Validation, authentication: Authentication) {
+    this.validation = validation;
     this.authentication = authentication;
   }
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const { email, password, passwordConfirmation } = httpRequest.body;
-      const requiredFields = ['email', 'password', 'passwordConfirmation'];
-      for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
-          return badRequest(new MissingParamError(field));
-        }
+      const errors = this.validation.validate(httpRequest.body);
+      if (errors?.length > 0) {
+        return badRequest(errors);
       }
-      if (password !== passwordConfirmation) {
-        return badRequest(new InvalidParamError('passwordConfirmation'));
-      }
-      const isEmail = this.validator.isEmail(email, 'Email inválido');
-      if (!isEmail) {
-        return badRequest(new InvalidParamError('email'));
-      }
+      const { email, password } = httpRequest.body;
       const accessToken = await this.authentication.auth(email, password);
       if (!accessToken) {
         return unauthorized();

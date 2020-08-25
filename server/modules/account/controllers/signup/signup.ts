@@ -1,8 +1,6 @@
 import { Controller } from '../../../../bin/protocols/controller';
-import ValidationContract from '../../../../bin/helpers/validators/validationContract';
 import { AddAccount } from '../../usecases/add-account';
 import { HttpResponse, HttpRequest } from '../../../../bin/protocols/http';
-import { InvalidParamError } from '../../../../bin/errors';
 import {
   badRequest,
   serverError,
