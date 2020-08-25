@@ -2,7 +2,7 @@ import repository from '../repositories/transaction-repository';
 import repositoryCard from '../repositories/card-repository';
 import repositoryUser from '../../user/repositories/user-repository';
 import ctrlBase from '../../../bin/base/controller-base';
-import validation from '../../../bin/helpers/validation';
+import validation from '../../../bin/helpers/validators/validationContract';
 import pagarme from 'pagarme';
 import variables from '../../../bin/configuration/variables';
 import moment from 'moment';

@@ -2,7 +2,7 @@ import OneSignal from '../../../bin/handlers/onesignal';
 import repository from '../repositories/chat-repository';
 import repositoryUser from '../../user/repositories/user-repository';
 import ctrlBase from '../../../bin/base/controller-base';
-import validation from '../../../bin/helpers/validation';
+import validation from '../../../bin/helpers/validators/validationContract';
 import { AddChatModel } from '../models/AddChatModel';
 
 const _repo = new repository();

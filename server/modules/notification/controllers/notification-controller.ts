@@ -7,7 +7,7 @@ const _repo = new repository();
 const _repoUser = new repositoryUser();
 
 import ctrlBase from '../../../bin/base/controller-base';
-import validation from '../../../bin/helpers/validation';
+import validation from '../../../bin/helpers/validators/validationContract';
 import { AddNotificationModel } from '../models/AddNotificationModel';
 export default class NotificationController {
   async post(req, res) {

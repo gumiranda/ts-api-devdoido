@@ -1,4 +1,4 @@
-import ValidationContract from '../../../../bin/helpers/validation';
+import ValidationContract from '../../../../bin/helpers/validators/validationContract';
 import { AddAccount, AddAccountModel } from '../../usecases/add-account';
 import { AccountModel } from '../../models/account';
 import { HttpRequest } from '../../../../bin/protocols/http';
@@ -135,6 +135,11 @@ describe('Login Controller', () => {
       .mockReturnValueOnce(new Promise((resolve) => resolve(null)));
     const httpResponse = await sut.handle(makeFakeRequest());
     expect(httpResponse).toEqual(unauthorized());
+  });
+  test('Should returns 200 if valid credentials are provided', async () => {
+    const { sut } = makeSut();
+    const httpResponse = await sut.handle(makeFakeRequest());
+    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }));
   });
   test('Should call Authentication with correct values', async () => {
     const { sut, authenticationStub } = makeSut();

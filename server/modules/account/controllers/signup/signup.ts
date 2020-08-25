@@ -1,35 +1,36 @@
 import { Controller } from '../../../../bin/protocols/controller';
-import ValidationContract from '../../../../bin/helpers/validation';
+import ValidationContract from '../../../../bin/helpers/validators/validationContract';
 import { AddAccount } from '../../usecases/add-account';
 import { HttpResponse, HttpRequest } from '../../../../bin/protocols/http';
-import { MissingParamError, InvalidParamError } from '../../../../bin/errors';
+import { InvalidParamError } from '../../../../bin/errors';
 import {
   badRequest,
   serverError,
   ok,
 } from '../../../../bin/helpers/http-helper';
+import { Validation } from '../../../../bin/helpers/validators/validation';
+import { ValidationComposite } from '../../../../bin/helpers/validators/validation-composite';
 
 export class SignUpController implements Controller {
   private readonly validator: ValidationContract;
   private readonly addAccount: AddAccount;
+  private readonly validation: ValidationComposite;
 
-  constructor(validator: ValidationContract, addAccount: AddAccount) {
+  constructor(
+    validator: ValidationContract,
+    addAccount: AddAccount,
+    validation: ValidationComposite,
+  ) {
     this.validator = validator;
+    this.validation = validation;
     this.addAccount = addAccount;
   }
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
-      const requiredFields = [
-        'name',
-        'email',
-        'password',
-        'passwordConfirmation',
-      ];
-      for (const field of requiredFields) {
-        if (!httpRequest.body[field]) {
-          return badRequest(new MissingParamError(field));
-        }
+      const errors = this.validation.validateAll(httpRequest.body);
+      if (errors?.length > 0) {
+        return badRequest(errors);
       }
       const { name, email, password, passwordConfirmation } = httpRequest.body;
       if (password !== passwordConfirmation) {

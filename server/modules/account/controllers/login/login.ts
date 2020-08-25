@@ -3,10 +3,11 @@ import { HttpRequest, HttpResponse } from '../../../../bin/protocols/http';
 import {
   badRequest,
   serverError,
+  ok,
   unauthorized,
 } from '../../../../bin/helpers/http-helper';
 import { MissingParamError, InvalidParamError } from '../../../../bin/errors';
-import ValidationContract from '../../../../bin/helpers/validation';
+import ValidationContract from '../../../../bin/helpers/validators/validationContract';
 import { Authentication } from '../../../../bin/usecases/auth/authentication';
 
 export class LoginController implements Controller {
@@ -37,6 +38,7 @@ export class LoginController implements Controller {
       if (!accessToken) {
         return unauthorized();
       }
+      return ok({ accessToken });
     } catch (error) {
       return serverError(error);
     }
