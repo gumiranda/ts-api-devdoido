@@ -20,13 +20,11 @@ describe('SignUp Routes', () => {
     await request(app)
       .post('/api/signup')
       .send({
-        body: {
-          name: 'teste',
-          email: 'teste.tessaste@gmail.com',
-          password: '123',
-          passwordConfirmation: '123',
-        },
+        name: 'tedsste',
+        email: 'testetessaste@gmail.com',
+        password: '111123',
+        passwordConfirmation: '111123',
       })
-      .expect(400);
+      .expect(200);
   });
 });

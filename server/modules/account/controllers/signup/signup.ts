@@ -10,16 +10,10 @@ import {
 } from '../../../../bin/helpers/http-helper';
 import { Validation } from '../../../../bin/helpers/validators/validation';
 export class SignUpController implements Controller {
-  private readonly validator: ValidationContract;
   private readonly addAccount: AddAccount;
   private readonly validation: Validation;
 
-  constructor(
-    validator: ValidationContract,
-    addAccount: AddAccount,
-    validation: Validation,
-  ) {
-    this.validator = validator;
+  constructor(addAccount: AddAccount, validation: Validation) {
     this.validation = validation;
     this.addAccount = addAccount;
   }
@@ -31,10 +25,6 @@ export class SignUpController implements Controller {
         return badRequest(errors);
       }
       const { name, email, password } = httpRequest.body;
-      const isEmail = this.validator.isEmail(email, 'Email inválido');
-      if (!isEmail) {
-        return badRequest(new InvalidParamError('email'));
-      }
       const account = await this.addAccount.add({
         name,
         email,

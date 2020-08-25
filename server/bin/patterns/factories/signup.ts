@@ -9,10 +9,11 @@ import { LogControllerDecorator } from '../decorators/log';
 import { ValidationComposite } from '../../helpers/validators/validation-composite';
 import { RequiredFieldValidation } from '../../helpers/validators/required-field-validation';
 import { Validation } from '../../helpers/validators/validation';
+import { CompareFieldsValidation } from '../../helpers/validators/compare-fields-validation';
+import { EmailValidation } from '../../helpers/validators/email-validation';
 
 export const makeSignUpController = (): Controller => {
   const salt = 12;
-  const validationContractAdapter = new ValidationContract();
   const bcryptAdapter = new BcryptAdapter(salt);
   const accountMongoRepository = new AccountMongoRepository();
   const dbAddAccount = new DbAddAccount(bcryptAdapter, accountMongoRepository);
@@ -21,9 +22,12 @@ export const makeSignUpController = (): Controller => {
   for (const field of requiredFields) {
     validations.push(new RequiredFieldValidation(field));
   }
+  validations.push(
+    new CompareFieldsValidation('password', 'passwordConfirmation'),
+  );
+  validations.push(new EmailValidation('email'));
   const validationComposite = new ValidationComposite(validations);
   const signUpController = new SignUpController(
-    validationContractAdapter,
     dbAddAccount,
     validationComposite,
   );
