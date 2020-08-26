@@ -1,4 +1,4 @@
-import { AccountMongoRepository } from './account';
+import { AccountMongoRepository } from './account-mongo-repository';
 import { MongoHelper } from '../../../bin/helpers/db/mongo/mongo-helper';
 import { Collection } from 'mongodb';
 let accountCollection: Collection;

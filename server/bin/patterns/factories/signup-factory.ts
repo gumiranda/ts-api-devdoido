@@ -1,22 +1,24 @@
 import { Controller } from '../../protocols/controller';
 import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter/bcrypt-adapter';
-import { AccountMongoRepository } from '../../../modules/account/repositories/account';
-import { LogMongoRepository } from '../../infra/log-repository/log';
-import { LogControllerDecorator } from '../decorators/log';
+import ValidationContract from '../../helpers/validators/validationContract';
+import { AccountMongoRepository } from '../../../modules/account/repositories/account-mongo-repository';
+import { DbAddAccount } from '../../usecases/add-account/db-add-account';
+import { SignUpController } from '../../../modules/account/controllers/signup/signup-controller';
+import { LogMongoRepository } from '../../infra/log-repository/log-mongo-repository';
+import { LogControllerDecorator } from '../decorators/log-controller-decorator';
 import { ValidationComposite } from '../../helpers/validators/validation-composite';
 import { RequiredFieldValidation } from '../../helpers/validators/required-field-validation';
 import { Validation } from '../../helpers/validators/validation';
 import { CompareFieldsValidation } from '../../helpers/validators/compare-fields-validation';
 import { EmailValidation } from '../../helpers/validators/email-validation';
-import { LoginController } from '../../../modules/account/controllers/login/login';
-import { Authentication } from '../../../modules/account/usecases/auth/authentication';
-export const makeLoginController = (): Controller => {
+
+export const makeSignUpController = (): Controller => {
   const salt = 12;
   const bcryptAdapter = new BcryptAdapter(salt);
   const accountMongoRepository = new AccountMongoRepository();
-  //const authentication = new DbAuthentication();
+  const dbAddAccount = new DbAddAccount(bcryptAdapter, accountMongoRepository);
   const validations: Validation[] = [];
-  const requiredFields = ['email', 'password', 'passwordConfirmation'];
+  const requiredFields = ['email', 'name', 'password', 'passwordConfirmation'];
   for (const field of requiredFields) {
     validations.push(new RequiredFieldValidation(field));
   }
@@ -25,11 +27,10 @@ export const makeLoginController = (): Controller => {
   );
   validations.push(new EmailValidation('email'));
   const validationComposite = new ValidationComposite(validations);
-  const loginController = new LoginController(
+  const signUpController = new SignUpController(
+    dbAddAccount,
     validationComposite,
-    null,
-    //authentication,
   );
   const logMongoRepository = new LogMongoRepository();
-  return new LogControllerDecorator(loginController, logMongoRepository);
+  return new LogControllerDecorator(signUpController, logMongoRepository);
 };

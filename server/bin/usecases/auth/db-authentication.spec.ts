@@ -3,7 +3,7 @@ import {
   HashComparer,
   TokenGenerator,
 } from './db-authentication-protocols';
-import { AccountModel } from '../../../modules/account/models/account';
+import { AccountModel } from '../../../modules/account/models/account-model';
 import { DbAuthentication } from './db-authentication';
 
 const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {

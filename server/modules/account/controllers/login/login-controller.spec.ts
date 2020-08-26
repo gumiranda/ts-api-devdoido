@@ -4,7 +4,7 @@ import {
   ok,
   unauthorized,
 } from '../../../../bin/helpers/http-helper';
-import { LoginController } from './login';
+import { LoginController } from './login-controller';
 import { Authentication } from '../../usecases/auth/authentication';
 import { Validation } from '../../../../bin/helpers/validators/validation';
 

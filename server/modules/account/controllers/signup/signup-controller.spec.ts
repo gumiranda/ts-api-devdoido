@@ -1,9 +1,9 @@
-import { SignUpController } from './signup';
+import { SignUpController } from './signup-controller';
 import {
   AddAccount,
   AddAccountModel,
 } from '../../usecases/add-account/add-account';
-import { AccountModel } from '../../models/account';
+import { AccountModel } from '../../models/account-model';
 import { HttpRequest } from '../../../../bin/protocols/http';
 import {
   badRequest,
