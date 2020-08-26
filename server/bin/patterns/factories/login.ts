@@ -1,5 +1,5 @@
 import { Controller } from '../../protocols/controller';
-import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter';
+import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter/bcrypt-adapter';
 import { AccountMongoRepository } from '../../../modules/account/repositories/account';
 import { LogMongoRepository } from '../../infra/log-repository/log';
 import { LogControllerDecorator } from '../decorators/log';

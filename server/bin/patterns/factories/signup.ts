@@ -1,5 +1,5 @@
 import { Controller } from '../../protocols/controller';
-import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter';
+import { BcryptAdapter } from '../../infra/criptography/bcrypt-adapter/bcrypt-adapter';
 import ValidationContract from '../../helpers/validators/validationContract';
 import { AccountMongoRepository } from '../../../modules/account/repositories/account';
 import { DbAddAccount } from '../../usecases/add-account/db-add-account';
