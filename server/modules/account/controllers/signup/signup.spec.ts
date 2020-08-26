@@ -1,5 +1,8 @@
 import { SignUpController } from './signup';
-import { AddAccount, AddAccountModel } from '../../usecases/add-account';
+import {
+  AddAccount,
+  AddAccountModel,
+} from '../../usecases/add-account/add-account';
 import { AccountModel } from '../../models/account';
 import { HttpRequest } from '../../../../bin/protocols/http';
 import {

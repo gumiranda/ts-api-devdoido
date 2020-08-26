@@ -6,7 +6,7 @@ import {
   ok,
   unauthorized,
 } from '../../../../bin/helpers/http-helper';
-import { Authentication } from '../../../../bin/usecases/auth/authentication';
+import { Authentication } from '../../usecases/auth/authentication';
 import { Validation } from '../../../../bin/helpers/validators/validation';
 
 export class LoginController implements Controller {

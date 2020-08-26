@@ -1,5 +1,5 @@
 import { Controller } from '../../../../bin/protocols/controller';
-import { AddAccount } from '../../usecases/add-account';
+import { AddAccount } from '../../usecases/add-account/add-account';
 import { HttpResponse, HttpRequest } from '../../../../bin/protocols/http';
 import {
   badRequest,
