@@ -8,7 +8,7 @@ export class AccountMongoRepository
   async loadByEmail(email: string): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const result = await accountCollection.findOne({ email });
-    return MongoHelper.mapPassword(result);
+    return result && MongoHelper.mapPassword(result);
   }
   async add(accountData: AddAccountModel): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
