@@ -126,10 +126,7 @@ export default class ChatController {
 
       res.status(202).send(resultado);
     } catch (erro) {
-      if (erro instanceof OneSignal.HTTPError) {
-        // When status code of HTTP response is not 2xx, HTTPError is thrown.
-        console.log(erro.statusCode);
-        console.log(erro.body);
+      if (erro.statusCode) {
         res
           .status(500)
           .send({ message: 'Erro no processamento', error: erro.body });

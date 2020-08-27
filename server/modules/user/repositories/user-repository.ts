@@ -1,8 +1,6 @@
 import '../models/user-model';
 import bcrypt from 'bcryptjs';
 import base from '../../../bin/base/repository-base';
-import { AddAccountModel } from '../models/AddAccountModel';
-import { AccountModel } from '../models/AccountModel';
 
 export default class userRepository {
   private readonly _base: base;
@@ -25,7 +23,7 @@ export default class userRepository {
     return this._base._model.findOne({ email: Email }, this._projection);
   }
 
-  create(modelData: AddAccountModel) {
+  create(modelData: any) {
     return this._base.create(modelData);
   }
 

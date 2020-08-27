@@ -5,6 +5,7 @@ import {
   AccountModel,
   AddAccountRepository,
 } from './db-add-account-protocols';
+import { LoadAccountByEmailRepository } from '../auth/db-authentication-protocols';
 
 const makeEncrypter = (): Encrypter => {
   class EncrypterStub implements Encrypter {
@@ -33,21 +34,37 @@ const makeAddAccountRepository = (): AddAccountRepository => {
   }
   return new AddAccountRepositoryStub();
 };
-
+const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
+  class LoadAccountByEmailRepositoryStub
+    implements LoadAccountByEmailRepository {
+    async loadByEmail(email: string): Promise<AccountModel> {
+      const account = {
+        _id: 'any_id',
+        name: 'any_name',
+        email: 'any_email@email.com',
+        password: 'any_password',
+      };
+      return new Promise((resolve) => resolve(account));
+    }
+  }
+  return new LoadAccountByEmailRepositoryStub();
+};
 interface SutTypes {
   sut: DbAddAccount;
   encrypterStub: Encrypter;
+  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
   addAccountRepositoryStub: AddAccountRepository;
 }
 
 const makeSut = (): SutTypes => {
   const encrypterStub = makeEncrypter();
+  const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
   const addAccountRepositoryStub = makeAddAccountRepository();
-  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub);
+  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub,loadAccountByEmailRepositoryStub);
   return {
     sut,
     encrypterStub,
-    addAccountRepositoryStub,
+    addAccountRepositoryStub,loadAccountByEmailRepositoryStub
   };
 };
 

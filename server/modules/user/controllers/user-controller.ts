@@ -5,7 +5,6 @@ import validation from '../../../bin/helpers/validators/validationContract';
 import ctrlBase from '../../../bin/base/controller-base';
 import variables from '../../../bin/configuration/variables';
 import OneSignal from '../../../bin/handlers/onesignal';
-import { AddAccountModel } from '../models/AddAccountModel';
 
 const _repo = new repository();
 
@@ -46,7 +45,7 @@ export default class UserController {
         await OneSignal.addDevice(req.body.pushToken);
       }
       const { name, password, email } = req.body;
-      const modelData: AddAccountModel = { name, password, email };
+      const modelData: any = { name, password, email };
       ctrlBase.post(_repo, validationContract, res, modelData);
     } catch (e) {
       res.status(500).send({ message: 'Internal server error', error: e });

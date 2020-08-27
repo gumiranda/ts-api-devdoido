@@ -5,8 +5,10 @@ import {
   badRequest,
   serverError,
   ok,
+  forbidden,
 } from '../../../../bin/helpers/http-helper';
 import { Validation } from '../../../../bin/helpers/validators/validation';
+import { EmailInUseError } from '../../../../bin/errors';
 export class SignUpController implements Controller {
   private readonly addAccount: AddAccount;
   private readonly validation: Validation;
@@ -28,6 +30,9 @@ export class SignUpController implements Controller {
         email,
         password,
       });
+      if(!account){
+        return forbidden(new EmailInUseError());
+      }
       return ok(account);
     } catch (error) {
       return serverError(error);

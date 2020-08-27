@@ -5,7 +5,7 @@ import ctrlBase from '../../../bin/base/controller-base';
 import validation from '../../../bin/helpers/validators/validationContract';
 import pagarme from 'pagarme';
 import variables from '../../../bin/configuration/variables';
-import moment from 'moment';
+import * as moment from 'moment';
 
 const _repo = new repository();
 const _repoCard = new repositoryCard();
@@ -65,7 +65,7 @@ export default class TransactionController {
           acquirer_id: pagarmeTransaction.acquirer_id,
         };
         const transactionCreated = await _repo.create(transaction);
-        const datav = new Date(moment().add(30, 'days')._d.toISOString());
+        const datav = new Date(); //moment.add(30, 'days')._d.toISOString());
         await _repoUser.updatePayment(datav, req.usuarioLogado.user._id);
         res.status(200).send(transactionCreated);
       } else {
@@ -147,12 +147,12 @@ export default class TransactionController {
           status: pagarmeTransaction.status,
           authorization_code: pagarmeTransaction.authorization_code,
           risk_level: pagarmeTransaction.risk_level,
-          card: card._id,
+          card: cardCreated._id,
           userId: req.usuarioLogado.user._id,
           acquirer_id: pagarmeTransaction.acquirer_id,
         };
         const transactionCreated = await _repo.create(transaction);
-        const datav = new Date(moment().add(30, 'days')._d.toISOString());
+        const datav = new Date(); //moment.add(30, 'days')._d.toISOString());
         await _repoUser.updatePayment(datav, req.usuarioLogado.user._id);
         res.status(200).send(transactionCreated);
       }

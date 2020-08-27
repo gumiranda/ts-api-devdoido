@@ -16,7 +16,7 @@ export const makeSignUpController = (): Controller => {
   const salt = 12;
   const bcryptAdapter = new BcryptAdapter(salt);
   const accountMongoRepository = new AccountMongoRepository();
-  const dbAddAccount = new DbAddAccount(bcryptAdapter, accountMongoRepository);
+  const dbAddAccount = new DbAddAccount(bcryptAdapter, accountMongoRepository,accountMongoRepository);
   const validations: Validation[] = [];
   const requiredFields = ['email', 'name', 'password', 'passwordConfirmation'];
   for (const field of requiredFields) {

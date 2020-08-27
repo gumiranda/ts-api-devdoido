@@ -3,7 +3,7 @@ import { MongoHelper } from './bin/helpers/db/mongo/mongo-helper';
 import jwt from 'jsonwebtoken';
 import variables from './bin/configuration/variables';
 const connectedUsers = {};
-MongoHelper.connect(process.env.connection)
+MongoHelper.connect(variables.Database.connection)
   .then(async () => {
     const { server, io } = await import('./bin/configuration/app');
 

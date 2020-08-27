@@ -9,8 +9,9 @@ import {
   badRequest,
   serverError,
   ok,
+  forbidden,
 } from '../../../../bin/helpers/http-helper';
-import { MissingParamError, ServerError } from '../../../../bin/errors';
+import { MissingParamError,EmailInUseError, ServerError } from '../../../../bin/errors';
 import { Validation } from '../../../../bin/helpers/validators/validation';
 
 const makeAddAccount = (): AddAccount => {
@@ -111,5 +112,11 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(
       badRequest([new MissingParamError('any_field')]),
     );
+  });
+  test('Should return 403 if AddAccount returns null', async () => {
+    const { sut,addAccountStub } = makeSut();
+    jest.spyOn(addAccountStub,'add').mockReturnValueOnce(new Promise(resolve=>resolve(null)))
+    const httpResponse = await sut.handle(makeFakeRequest());
+    expect(httpResponse).toEqual(forbidden(new EmailInUseError()));
   });
 });
