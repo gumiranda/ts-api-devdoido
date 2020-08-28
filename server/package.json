@@ -72,6 +72,7 @@
     "jest": "^26.1.0",
     "mockdate": "^3.0.2",
     "mongodb-memory-server": "^6.6.1",
+    "mongodb-memory-server-core": "^6.6.6",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",

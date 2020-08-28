@@ -18,12 +18,12 @@ const makeEncrypter = (): Encrypter => {
 const makeFakeAccount = (): AccountModel => ({
   _id: 'valid_id',
   name: 'valid_name',
-  email: 'valid_email',
+  email: 'valid_email@mail.com',
   password: 'hashed_password',
 });
 const makeFakeAccountData = (): AddAccountModel => ({
   name: 'valid_name',
-  email: 'valid_email',
+  email: 'valid_email@mail.com',
   password: 'valid_password',
 });
 const makeAddAccountRepository = (): AddAccountRepository => {
@@ -34,21 +34,7 @@ const makeAddAccountRepository = (): AddAccountRepository => {
   }
   return new AddAccountRepositoryStub();
 };
-const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
-  class LoadAccountByEmailRepositoryStub
-    implements LoadAccountByEmailRepository {
-    async loadByEmail(email: string): Promise<AccountModel> {
-      const account = {
-        _id: 'any_id',
-        name: 'any_name',
-        email: 'any_email@email.com',
-        password: 'any_password',
-      };
-      return new Promise((resolve) => resolve(account));
-    }
-  }
-  return new LoadAccountByEmailRepositoryStub();
-};
+
 interface SutTypes {
   sut: DbAddAccount;
   encrypterStub: Encrypter;
@@ -56,15 +42,30 @@ interface SutTypes {
   addAccountRepositoryStub: AddAccountRepository;
 }
 
+const makeLoadAccountByEmailRepository = (): LoadAccountByEmailRepository => {
+  class LoadAccountByEmailRepositoryStub
+    implements LoadAccountByEmailRepository {
+    async loadByEmail(email: string): Promise<AccountModel> {
+      return new Promise((resolve) => resolve(makeFakeAccount()));
+    }
+  }
+  return new LoadAccountByEmailRepositoryStub();
+};
 const makeSut = (): SutTypes => {
-  const encrypterStub = makeEncrypter();
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
+
+  const encrypterStub = makeEncrypter();
   const addAccountRepositoryStub = makeAddAccountRepository();
-  const sut = new DbAddAccount(encrypterStub, addAccountRepositoryStub,loadAccountByEmailRepositoryStub);
+  const sut = new DbAddAccount(
+    encrypterStub,
+    addAccountRepositoryStub,
+    loadAccountByEmailRepositoryStub,
+  );
   return {
     sut,
     encrypterStub,
-    addAccountRepositoryStub,loadAccountByEmailRepositoryStub
+    loadAccountByEmailRepositoryStub,
+    addAccountRepositoryStub,
   };
 };
 
@@ -93,7 +94,7 @@ describe('DbAddAccount Usecase', () => {
     await sut.add(makeFakeAccountData());
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'hashed_password',
     });
   });

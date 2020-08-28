@@ -14,8 +14,8 @@ export class DbAddAccount implements AddAccount {
 
   constructor(
     encrypter: Encrypter,
-    addAccountRepository: AddAccountRepository, 
-    loadAccountByEmailRepository: LoadAccountByEmailRepository
+    addAccountRepository: AddAccountRepository,
+    loadAccountByEmailRepository: LoadAccountByEmailRepository,
   ) {
     this.encrypter = encrypter;
     this.addAccountRepository = addAccountRepository;
@@ -23,12 +23,16 @@ export class DbAddAccount implements AddAccount {
   }
 
   async add(accountData: AddAccountModel): Promise<AccountModel> {
-    const account = await this.loadAccountByEmailRepository.loadByEmail(accountData.email);
-    if (!account) {
-      const hashedPassword = await this.encrypter.encrypt(accountData.password)
-      const newAccount = await this.addAccountRepository.add(Object.assign({}, accountData, { password: hashedPassword }))
-      return newAccount
-    }
-    return null
+    const account = await this.loadAccountByEmailRepository.loadByEmail(
+      accountData.email,
+    );
+    //if (!account) {
+    const hashedPassword = await this.encrypter.encrypt(accountData.password);
+    const newAccount = await this.addAccountRepository.add(
+      Object.assign({}, accountData, { password: hashedPassword }),
+    );
+    return newAccount;
+    //}
+    //return null
   }
 }
